@@ -9,14 +9,9 @@ import { Auth } from './auth/schema/auth.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.DB_HOST,
-      port: 5432,
-      database: process.env.DB_DATABASE,
-      username: process.env.DB_USERNAME,
-      password: process.env.DB_PASSWORD,
+      url: process.env.DB_URL,
       entities: [Auth],
       synchronize: true,
-      ssl: true,
     }),
     AuthModule,
   ],
