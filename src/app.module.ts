@@ -16,6 +16,7 @@ import { Auth } from './auth/schema/auth.entity';
       password: process.env.DB_PASSWORD,
       entities: [Auth],
       synchronize: true,
+      ssl: true,
     }),
     AuthModule,
   ],
