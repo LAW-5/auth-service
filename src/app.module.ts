@@ -12,6 +12,9 @@ import { Auth } from './auth/schema/auth.entity';
       url: process.env.DATABASE_URL,
       entities: [Auth],
       synchronize: true,
+      ssl: {
+        rejectUnauthorized: false,
+      },
     }),
     AuthModule,
   ],
