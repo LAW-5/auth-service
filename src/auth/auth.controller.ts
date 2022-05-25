@@ -2,12 +2,14 @@ import { Controller, Inject } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import {
   LoginRequestDto,
+  RegisterMerchantDto,
   RegisterRequestDto,
   ValidateRequestDto,
 } from './auth.dto';
 import {
   AUTH_SERVICE_NAME,
   LoginResponse,
+  RegisterMerchantResponse,
   RegisterResponse,
   ValidateResponse,
 } from './auth.pb';
@@ -31,5 +33,12 @@ export class AuthController {
   @GrpcMethod(AUTH_SERVICE_NAME, 'Validate')
   private validate(payload: ValidateRequestDto): Promise<ValidateResponse> {
     return this.service.validate(payload);
+  }
+
+  @GrpcMethod(AUTH_SERVICE_NAME, 'RegisterMerchant')
+  private registerMerchant(
+    payload: RegisterMerchantDto,
+  ): Promise<RegisterMerchantResponse> {
+    return this.service.registerMerchant(payload);
   }
 }

@@ -1,5 +1,10 @@
 import { IsEmail, IsString } from 'class-validator';
-import { LoginRequest, RegisterRequest, ValidateRequest } from './auth.pb';
+import {
+  LoginRequest,
+  RegisterMecrhantRequest,
+  RegisterRequest,
+  ValidateRequest,
+} from './auth.pb';
 
 export class LoginRequestDto implements LoginRequest {
   @IsEmail()
@@ -23,4 +28,15 @@ export class RegisterRequestDto implements RegisterRequest {
 export class ValidateRequestDto implements ValidateRequest {
   @IsString()
   public readonly token: string;
+}
+
+export class RegisterMerchantDto implements RegisterMecrhantRequest {
+  @IsEmail()
+  public readonly email: string;
+
+  @IsString()
+  public readonly password: string;
+
+  @IsString()
+  public readonly merchantName: string;
 }

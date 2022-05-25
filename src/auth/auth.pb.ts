@@ -38,10 +38,25 @@ export interface ValidateResponse {
   userId: number;
 }
 
+export interface RegisterMecrhantRequest {
+  email: string;
+  password: string;
+  merchantName: string;
+}
+
+export interface RegisterMerchantResponse {
+  status: number;
+  error: string[];
+}
+
 export const AUTH_PACKAGE_NAME = 'auth';
 
 export interface AuthServiceClient {
   register(request: RegisterRequest): Observable<RegisterResponse>;
+
+  registerMerchant(
+    request: RegisterMecrhantRequest,
+  ): Observable<RegisterMerchantResponse>;
 
   login(request: LoginRequest): Observable<LoginResponse>;
 
@@ -55,6 +70,13 @@ export interface AuthServiceController {
     | Promise<RegisterResponse>
     | Observable<RegisterResponse>
     | RegisterResponse;
+
+  registerMerchant(
+    request: RegisterMecrhantRequest,
+  ):
+    | Promise<RegisterMerchantResponse>
+    | Observable<RegisterMerchantResponse>
+    | RegisterMerchantResponse;
 
   login(
     request: LoginRequest,
@@ -70,7 +92,12 @@ export interface AuthServiceController {
 
 export function AuthServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['register', 'login', 'validate'];
+    const grpcMethods: string[] = [
+      'register',
+      'registerMerchant',
+      'login',
+      'validate',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,
