@@ -3,11 +3,18 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {
   LoginRequestDto,
+  RegisterMerchantDto,
   RegisterRequestDto,
   ValidateRequestDto,
 } from '../auth.dto';
-import { LoginResponse, RegisterResponse, ValidateResponse } from '../auth.pb';
+import {
+  LoginResponse,
+  RegisterMerchantResponse,
+  RegisterResponse,
+  ValidateResponse,
+} from '../auth.pb';
 import { Auth } from '../schema/auth.entity';
+import { UserRole } from '../schema/enum';
 import { JwtService } from './jwt.service';
 
 @Injectable()
@@ -34,8 +41,34 @@ export class AuthService {
     auth = new Auth();
 
     auth.email = email;
-    auth.fullName = fullName;
+    auth.name = fullName;
     auth.password = this.jwtService.encodePassword(password);
+    auth.role = UserRole.USER;
+
+    await this.repository.save(auth);
+
+    return { status: HttpStatus.CREATED, error: null };
+  }
+
+  public async registerMerchant({
+    email,
+    password,
+    merchantName,
+  }: RegisterMerchantDto): Promise<RegisterMerchantResponse> {
+    let auth: Auth = await this.repository.findOne({
+      where: { email },
+    });
+
+    if (auth) {
+      return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
+    }
+
+    auth = new Auth();
+
+    auth.email = email;
+    auth.name = merchantName;
+    auth.password = this.jwtService.encodePassword(password);
+    auth.role = UserRole.MERCHANT;
 
     await this.repository.save(auth);
 
