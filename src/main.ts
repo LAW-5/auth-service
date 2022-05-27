@@ -5,6 +5,8 @@ import { join } from 'path';
 import { AppModule } from './app.module';
 import { protobufPackage } from './auth/auth.pb';
 import { HttpExceptionFilter } from './auth/filter/http-exception.filter';
+import 'dotenv/config';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 async function bootstrap() {
   const app: INestMicroservice = await NestFactory.createMicroservice(
@@ -19,6 +21,7 @@ async function bootstrap() {
     },
   );
 
+  app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 

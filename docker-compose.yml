@@ -1,0 +1,27 @@
+version: '3.8'
+networks:
+  auth:
+services:
+  auth-service:
+    build:
+      context: .
+      target: prod
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    ports:
+      - 5001:5001
+    networks:
+      - auth
+    volumes:
+      - ./src/log:/usr/src/app/src/log
+    restart: unless-stopped
+  promtail:
+    image: grafana/promtail
+    volumes:
+      - ./src/log:/var/auth
+      - ./promtail:/etc/promtail
+    restart: unless-stopped
+    command: -config.file=/etc/promtail/promtail-config.yml
+    networks:
+      - auth

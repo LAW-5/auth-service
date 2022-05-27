@@ -1,5 +1,6 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Repository } from 'typeorm';
 import {
   LoginRequestDto,
@@ -25,6 +26,9 @@ export class AuthService {
   @Inject(JwtService)
   private readonly jwtService: JwtService;
 
+  @Inject(WINSTON_MODULE_PROVIDER)
+  private readonly logger: Logger;
+
   public async register({
     email,
     password,
@@ -34,7 +38,10 @@ export class AuthService {
       where: { email },
     });
 
+    this.logger.log('info', `creating user with email : ${email}`);
+
     if (auth) {
+      this.logger.log('warn', `user with email : ${email} already exist`);
       return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
     }
 
@@ -59,7 +66,10 @@ export class AuthService {
       where: { email },
     });
 
+    this.logger.log('info', `creating merchant with email : ${email}`);
+
     if (auth) {
+      this.logger.log('warn', `merchant with email : ${email} already exist`);
       return { status: HttpStatus.CONFLICT, error: ['E-Mail already exists'] };
     }
 
@@ -83,7 +93,10 @@ export class AuthService {
       where: { email },
     });
 
+    this.logger.log('info', `attempting login for email: ${email}`);
+
     if (!auth) {
+      this.logger.log('warn', `no user with email: ${email}`);
       return {
         status: HttpStatus.NOT_FOUND,
         error: ['E-Mail not found'],
@@ -97,6 +110,7 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
+      this.logger.log('warn', `wrong password login for email: ${email}`);
       return {
         status: HttpStatus.NOT_FOUND,
         error: ['Wrong password'],
@@ -113,6 +127,8 @@ export class AuthService {
     token,
   }: ValidateRequestDto): Promise<ValidateResponse> {
     const decode: Auth = await this.jwtService.verify(token);
+
+    this.logger.log('info', `validatin token`);
 
     if (!decode) {
       return {
