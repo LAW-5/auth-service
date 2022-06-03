@@ -26,6 +26,8 @@ export interface LoginResponse {
   status: number;
   error: string[];
   token: string;
+  email: string;
+  role: string;
 }
 
 export interface ValidateRequest {

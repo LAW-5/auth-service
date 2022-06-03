@@ -101,6 +101,8 @@ export class AuthService {
         status: HttpStatus.NOT_FOUND,
         error: ['E-Mail not found'],
         token: null,
+        email: null,
+        role: null,
       };
     }
 
@@ -115,12 +117,20 @@ export class AuthService {
         status: HttpStatus.NOT_FOUND,
         error: ['Wrong password'],
         token: null,
+        email: null,
+        role: null,
       };
     }
 
     const token: string = this.jwtService.generateToken(auth);
 
-    return { status: HttpStatus.OK, error: null, token };
+    return {
+      status: HttpStatus.OK,
+      error: null,
+      token,
+      email: auth.email,
+      role: auth.role,
+    };
   }
 
   public async validate({
