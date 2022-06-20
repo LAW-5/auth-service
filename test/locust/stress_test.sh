@@ -1,0 +1,1 @@
+ab -n 1000 -c 10 -p stress_test_data.json -T application/json -rk https://gateway.nofamex.tech/auth/login
